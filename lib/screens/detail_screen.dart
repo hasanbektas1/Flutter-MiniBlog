@@ -34,6 +34,21 @@ class _DetailScreenState extends State<DetailScreen> {
     });
   }
 
+  deleteBlogItem() async {
+    Uri url = Uri.parse(
+        "https://tobetoapi.halitkalayci.com/api/Articles/${widget.blogId}");
+    final response = await http.delete(url);
+
+    if (response.statusCode == 204) {
+      print("Silindi");
+    }
+
+    setState(() {
+      blogItem = Blog.fromJson(blogs);
+      Navigator.pop(context);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,7 +101,7 @@ class _DetailScreenState extends State<DetailScreen> {
             const Spacer(),
             ElevatedButton(
               onPressed: () {
-                // Seçilen veri silme işlemi yapılacak
+                deleteBlogItem();
               },
               child: const Text("Sil"),
             ),
