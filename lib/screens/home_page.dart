@@ -36,32 +36,66 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Bloglar"),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  bool? result = await Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (ctx) => AddBlog()));
+    return OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+      if (orientation == Orientation.portrait) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text("Bloglar"),
+              actions: [
+                IconButton(
+                    onPressed: () async {
+                      bool? result = await Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (ctx) => AddBlog()));
 
-                  if (result == true) {
-                    fetchBlogs();
-                  }
-                },
-                icon: const Icon(Icons.add))
-          ],
-        ),
-        body: reversedBlogs.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () async {
-                  fetchBlogs();
-                },
-                child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        BlogItem(blog: reversedBlogs[index]),
-                    itemCount: reversedBlogs.length),
-              ));
+                      if (result == true) {
+                        fetchBlogs();
+                      }
+                    },
+                    icon: const Icon(Icons.add))
+              ],
+            ),
+            body: reversedBlogs.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      fetchBlogs();
+                    },
+                    child: ListView.builder(
+                        itemBuilder: (context, index) =>
+                            BlogItem(blog: reversedBlogs[index]),
+                        itemCount: reversedBlogs.length),
+                  ));
+      } else {
+        return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
+              title: const Text("Bloglar"),
+              actions: [
+                IconButton(
+                    onPressed: () async {
+                      bool? result = await Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (ctx) => AddBlog()));
+
+                      if (result == true) {
+                        fetchBlogs();
+                      }
+                    },
+                    icon: const Icon(Icons.add))
+              ],
+            ),
+            body: reversedBlogs.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      fetchBlogs();
+                    },
+                    child: ListView.builder(
+                        itemBuilder: (context, index) =>
+                            BlogItem(blog: reversedBlogs[index]),
+                        itemCount: reversedBlogs.length),
+                  ));
+      }
+    });
   }
 }
