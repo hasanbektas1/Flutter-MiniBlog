@@ -1,10 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:miniblog/models/blog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniblog/bloc/article_bloc/article_bloc.dart';
+import 'package:miniblog/bloc/article_bloc/article_event.dart';
+import 'package:miniblog/bloc/article_bloc/article_state.dart';
 import 'package:miniblog/screens/add_blog.dart';
 import 'package:miniblog/widgets/blog_item.dart';
-import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -14,16 +14,16 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  List<Blog> blogs = [];
-  List<Blog> reversedBlogs = [];
+/*   List<Blog> blogs = [];
+  List<Blog> reversedBlogs = []; */
 
   @override
   void initState() {
     super.initState();
-    fetchBlogs();
+    //fetchBlogs();
   }
 
-  fetchBlogs() async {
+/*   fetchBlogs() async {
     Uri url = Uri.parse("https://tobetoapi.halitkalayci.com/api/Articles");
     final response = await http.get(url);
     final List jsonData = json.decode(response.body);
@@ -32,7 +32,7 @@ class _HomepageState extends State<Homepage> {
       blogs = jsonData.map((json) => Blog.fromJson(json)).toList();
       reversedBlogs = blogs.reversed.toList();
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -49,52 +49,42 @@ class _HomepageState extends State<Homepage> {
                           .push(MaterialPageRoute(builder: (ctx) => AddBlog()));
 
                       if (result == true) {
-                        fetchBlogs();
+                        context.read<ArticleBloc>().add(Fetcharticles());
                       }
                     },
                     icon: const Icon(Icons.add))
               ],
             ),
-            body: reversedBlogs.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      fetchBlogs();
-                    },
-                    child: ListView.builder(
-                        itemBuilder: (context, index) =>
-                            BlogItem(blog: reversedBlogs[index]),
-                        itemCount: reversedBlogs.length),
-                  ));
-      } else {
-        return Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
-              title: const Text("Bloglar"),
-              actions: [
-                IconButton(
-                    onPressed: () async {
-                      bool? result = await Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (ctx) => AddBlog()));
+            body: BlocBuilder<ArticleBloc, ArticleState>(
+                builder: (context, state) {
+              if (state is ArticlesInitial) {
+                context
+                    .read<ArticleBloc>()
+                    .add(Fetcharticles()); // UI'dan BLOC'a Event
+                return const Center(child: Text("İStek atılıyor.."));
+              }
+              if (state is ArticlesLoading) {
+                print("loading");
 
-                      if (result == true) {
-                        fetchBlogs();
-                      }
-                    },
-                    icon: const Icon(Icons.add))
-              ],
-            ),
-            body: reversedBlogs.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      fetchBlogs();
-                    },
-                    child: ListView.builder(
-                        itemBuilder: (context, index) =>
-                            BlogItem(blog: reversedBlogs[index]),
-                        itemCount: reversedBlogs.length),
-                  ));
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is ArticlesLoaded) {
+                return ListView.builder(
+                  itemCount: state.blogs.length,
+                  itemBuilder: ((context, index) =>
+                      BlogItem(blog: state.blogs[index])),
+                );
+              }
+              if (state is ArticlesError) {
+                return const Center(
+                    child: Text("Bloglar yüklenirken bir hata oluştu"));
+              }
+
+              return const Center(child: Text("Unknown State"));
+            }));
+      } else {
+        const Center(child: Text("Landscape"));
+        return const Center(child: Text("Unknown State"));
       }
     });
   }
