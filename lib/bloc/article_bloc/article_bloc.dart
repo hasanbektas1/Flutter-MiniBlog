@@ -8,6 +8,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
 
   ArticleBloc({required this.articleRepository}) : super(ArticlesInitial()) {
     on<Fetcharticles>(_onFetcArticlees);
+    on<ArticleAdd>(_onArticleAdd);
   }
 
   void _onFetcArticlees(Fetcharticles event, Emitter<ArticleState> emit) async {
@@ -16,6 +17,14 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     try {
       final articles = await articleRepository.fetchAllBlogs();
       emit(ArticlesLoaded(blogs: articles));
+    } catch (e) {
+      emit(ArticlesError());
+    }
+  }
+
+  void _onArticleAdd(ArticleAdd event, Emitter<ArticleState> emit) async {
+    try {
+      await articleRepository.submitForm(event.blogadd, event.context);
     } catch (e) {
       emit(ArticlesError());
     }
