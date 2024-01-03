@@ -18,11 +18,7 @@ class ArticleDetailBloc extends Bloc<ArticleDetailEvent, ArticleDetailState> {
     emit(ArticlesDetailLoading());
 
     try {
-      print("DetailBloc");
-
       final articlesid = await articleRepository.fetchAllBlogsid(blogID);
-      print("DetailBloc");
-      print(articlesid);
       emit(ArticlesDetailLoaded(blogsid: articlesid));
     } catch (e) {
       emit(ArticlesDetailError());
