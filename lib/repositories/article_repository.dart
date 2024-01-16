@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:miniblog/models/blog.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +18,22 @@ class ArticleRepository {
     final response = await http.get(url);
     final jsonData = json.decode(response.body);
     return Blog.fromJson(jsonData);
+  }
+
+  Future<void> fetchDeleteBlogsid(String blogID) async {
+    Uri url =
+        Uri.parse("https://tobetoapi.halitkalayci.com/api/Articles/${blogID}");
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        print("Blog başarıyla silindi");
+      } else {
+        print("Blog silinemedi. Hata kodu: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Hata oluştu: $e");
+    }
   }
 
   submitForm(Blog blogAdd, BuildContext context) async {

@@ -10,6 +10,7 @@ class ArticleDetailBloc extends Bloc<ArticleDetailEvent, ArticleDetailState> {
       : super(ArticlesDetailInitial()) {
     on<FetchDetailarticlesid>(_onFetcDetailArticleesid);
     on<ResetDetailEvent>(_onResetDetailArticleesid);
+    on<DeleteArticleEvent>(_onDeleteArticle);
   }
 
   void _onFetcDetailArticleesid(
@@ -28,5 +29,16 @@ class ArticleDetailBloc extends Bloc<ArticleDetailEvent, ArticleDetailState> {
   void _onResetDetailArticleesid(
       ResetDetailEvent event, Emitter<ArticleDetailState> emit) async {
     emit(ArticlesDetailInitial());
+  }
+
+  void _onDeleteArticle(
+      DeleteArticleEvent event, Emitter<ArticleDetailState> emit) async {
+    final String blogID = event.blogId;
+
+    try {
+      await articleRepository.fetchDeleteBlogsid(blogID);
+    } catch (e) {
+      emit(ArticlesDetailError());
+    }
   }
 }

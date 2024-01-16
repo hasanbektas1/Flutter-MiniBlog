@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:miniblog/bloc/article_bloc/article_bloc.dart';
 import 'package:miniblog/bloc/article_bloc/article_event.dart';
 import 'package:miniblog/models/blog.dart';
