@@ -119,6 +119,10 @@ class _DetailScreenState extends State<DetailScreen> {
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {
+                        context
+                            .read<ArticleDetailBloc>()
+                            .add(DeleteArticleEvent(blogId: widget.blogId));
+
                         //   deleteBlogItem(); Bloc ile Geliştirilecek...
                       },
                       child: const Text("Sil"),

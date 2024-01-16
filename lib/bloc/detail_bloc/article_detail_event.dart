@@ -7,3 +7,9 @@ class FetchDetailarticlesid extends ArticleDetailEvent {
 }
 
 class ResetDetailEvent extends ArticleDetailEvent {}
+
+class DeleteArticleEvent extends ArticleDetailEvent {
+  final String blogId;
+
+  DeleteArticleEvent({required this.blogId});
+}
