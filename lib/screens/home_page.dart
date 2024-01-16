@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miniblog/bloc/article_bloc/article_bloc.dart';
 import 'package:miniblog/bloc/article_bloc/article_event.dart';
 import 'package:miniblog/bloc/article_bloc/article_state.dart';
+import 'package:miniblog/models/blog.dart';
 import 'package:miniblog/screens/add_blog.dart';
 import 'package:miniblog/widgets/blog_item.dart';
 
@@ -22,17 +23,6 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     //fetchBlogs();
   }
-
-/*   fetchBlogs() async {
-    Uri url = Uri.parse("https://tobetoapi.halitkalayci.com/api/Articles");
-    final response = await http.get(url);
-    final List jsonData = json.decode(response.body);
-
-    setState(() {
-      blogs = jsonData.map((json) => Blog.fromJson(json)).toList();
-      reversedBlogs = blogs.reversed.toList();
-    });
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +62,7 @@ class _HomepageState extends State<Homepage> {
                 return ListView.builder(
                   itemCount: state.blogs.length,
                   itemBuilder: ((context, index) =>
-                      BlogItem(blog: state.blogs[index])),
+                      BlogItem(blog: state.blogs.reversed.toList()[index])),
                 );
               }
               if (state is ArticlesError) {
